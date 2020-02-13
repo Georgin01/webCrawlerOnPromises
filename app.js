@@ -3,6 +3,8 @@ const axios = require('axios');
 
 const url = `https://www.marathonbet.ru/su/popular/Football`;
 
+
+
 function loadBetPage(pageNum = 0, acc = [], action = true) {
     if (!action){
         return Promise.resolve();
@@ -19,12 +21,13 @@ function loadBetPage(pageNum = 0, acc = [], action = true) {
                 action = hasNextPage;
 
                 if (pageContent){
-                    acc.push({pageNum, pageContent: pageContent.content});
+                    acc.push(pageContent.content);
                 }
                 if(hasNextPage){
                     return loadBetPage(pageNum++, acc);
                 }
             }
+            return acc;
         })
         .catch(err => {
             console.error(err);
@@ -32,4 +35,5 @@ function loadBetPage(pageNum = 0, acc = [], action = true) {
         });
 }
 
-console.log(loadBetPage());
+Promise.all(loadBetPage())
+    .then(result => console.log(result));
